@@ -126,6 +126,7 @@ public class DataSourcePerTenantService implements DisposableBean {
                 .append(port)
                 .append('/')
                 .append(dbName)
+                .append("?enabledTLSProtocols=TLSv1.2")
                 .toString();
         logger.info("JDBC CONNECTION URL: " + url);
         return url;
