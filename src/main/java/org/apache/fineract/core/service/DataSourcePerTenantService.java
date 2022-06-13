@@ -116,7 +116,7 @@ public class DataSourcePerTenantService implements DisposableBean {
     }
 
     private String createJdbcUrl(String jdbcProtocol, String jdbcSubprotocol, String hostname, int port, String dbName) {
-        return new StringBuilder()
+        String url = new StringBuilder()
                 .append(jdbcProtocol)
                 .append(':')
                 .append(jdbcSubprotocol)
@@ -127,6 +127,8 @@ public class DataSourcePerTenantService implements DisposableBean {
                 .append('/')
                 .append(dbName)
                 .toString();
+        logger.info("JDBC CONNECTION URL: " + url);
+        return url;
     }
 
     @Override
