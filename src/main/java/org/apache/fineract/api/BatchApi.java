@@ -155,7 +155,7 @@ public class BatchApi {
         total += subBatchTotal;
         ongoing += subBatchOngoing;
 
-        if (batch.getResult_file().isEmpty()) {
+        if (batch.getResult_file() == null || (batch.getResult_file() != null && batch.getResult_file().isEmpty())) {
             batch.setResult_file(createDetailsFile(transfers));
         }
         batch.setCompleted(completed);
