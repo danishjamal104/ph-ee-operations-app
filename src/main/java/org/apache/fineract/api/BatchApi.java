@@ -79,7 +79,7 @@ public class BatchApi {
         response.put("data", new ResponseEntity<List<Transfer>>(transfers, new HttpHeaders(), HttpStatus.OK));
         Batch batch = batchRepository.findByBatchId(batchId);
 
-        if (batch.getResult_file() != null) {
+        if (batch != null && batch.getResult_file() != null) {
             if (transfers.size() == 0) {
                 httpServletResponse.setHeader("Location", batch.getResult_file());
                 httpServletResponse.setStatus(302);
