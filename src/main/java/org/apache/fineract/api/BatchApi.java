@@ -14,9 +14,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.math.BigDecimal;
 import org.springframework.http.HttpStatus;
+
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -57,11 +60,12 @@ public class BatchApi {
     }
 
     @GetMapping("/batch/detail")
-    public ResponseEntity<List<Transfer>> batchDetails(@RequestParam(value = "batchId") String batchId,
-                                                       @RequestParam(value = "status", defaultValue = "ALL") String status,
-                                                       @RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
-                                                       @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
-
+    public HashMap<String, Object> batchDetails(HttpServletResponse httpServletResponse,
+                                                @RequestParam(value = "batchId") String batchId,
+                                                @RequestParam(value = "status", defaultValue = "ALL") String status,
+                                                @RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
+                                                @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
+        HashMap<String, Object> response = new HashMap<>();
         List<Transfer> transfers;
 
         if (status.equalsIgnoreCase(TransferStatus.COMPLETED.toString()) ||
@@ -72,7 +76,19 @@ public class BatchApi {
             transfers = transferRepository.findAllByBatchId(batchId, new PageRequest(pageNo, pageSize));
         }
 
-        return new ResponseEntity<List<Transfer>>(transfers, new HttpHeaders(), HttpStatus.OK);
+        response.put("data", new ResponseEntity<List<Transfer>>(transfers, new HttpHeaders(), HttpStatus.OK));
+        Batch batch = batchRepository.findByBatchId(batchId);
+
+        if (batch.getResult_file() != null) {
+            if (transfers.size() == 0) {
+                httpServletResponse.setHeader("Location", batch.getResult_file());
+                httpServletResponse.setStatus(302);
+                return null;
+            }
+            response.put("reportFile", batch.getResult_file());
+        }
+
+        return response;
     }
 
     @GetMapping("/batch/transactions")
