@@ -1,22 +1,28 @@
 fineract:
   datasource:
     core:
-      host: operations-mysql
+      host: localhost
       port: 3306
       schema: tenants
-      username: root
-      password: mysql
+      username: mifos
+      password: password
     common:
       protocol: jdbc
       subprotocol: mysql
       driverclass_name: com.mysql.cj.jdbc.Driver
-
+tenants: "ibank-india,ibank-usa"
 token:
   user:
     access-validity-seconds: 600
     refresh-validity-seconds: 43200
   client:
     access-validity-seconds: 3600
+    channel:
+      secret: "p1234"
+
+channel-connector:
+  url: http://bb-connector-channel.mifos.io
+  transfer-path: /channel/transfer
 
 config:
   imu:
@@ -38,7 +44,7 @@ spring:
     enabled: false
 
 server:
-  port: 5000
+  port: 5002
 
 rest:
   authorization:
